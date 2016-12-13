@@ -465,14 +465,15 @@ public class Articulos extends javax.swing.JFrame {
             
             vCodigo = codigo.getText();
             vArticulo = articulo.getText();
-            vFabricante = Cfabricante.getSelectedItem(getCodigoFabricante(r.getString("NOMBRE")));
+            
             //Obtener el valor del combo
+            vFabricante = (String) Cfabricante.getSelectedItem();
+            
             //Llamar metodo obtener codigo con el valor del combo
+            int Cod = getCodigoFabricante(vFabricante);
+            
             ///Este codigo lo actualizo en la bbdd
-            
-            //vFabricante = //fabricante.getText();
-            
-                    
+                               
             vPeso = peso.getText();
             vCategoria = categoria.getText();
             vPreciov = preciov.getText();
@@ -481,7 +482,7 @@ public class Articulos extends javax.swing.JFrame {
 
            
             Statement s = connection.createStatement();
-            //String query = "update articulos set COD_ARTICULO='" + vCodigo + "', ARTICULO='" + vArticulo + "', FABRICANTE='" + vFabricante + "', PESO='" + vPeso + "', CATEGORIA='" + vCategoria + "', PRECIO_VENTA='" + vPreciov + "', PRECIO_COSTE='" + vPrecioc + "', EXISTENCIAS='" + vExistencias + "' WHERE COD_ARTICULO='" + vCodigo + "'";
+            String query = "update articulos set COD_ARTICULO='" + vCodigo + "', ARTICULO='" + vArticulo + "', FABRICANTE=" + Cod + ", PESO=" + vPeso + ", CATEGORIA='" + vCategoria + "', PRECIO_VENTA=" + vPreciov + ", PRECIO_COSTE=" + vPrecioc + ", EXISTENCIAS=" + vExistencias + " WHERE COD_ARTICULO='" + vCodigo + "'";
             int resultado = s.executeUpdate(query);
             r.refreshRow();
         } catch (SQLException ex) {
@@ -494,18 +495,22 @@ public class Articulos extends javax.swing.JFrame {
             String vCodigo, vArticulo, vFabricante, vPeso, vCategoria, vPreciov, vPrecioc, vExistencias;
             vCodigo = codigo.getText();
             vArticulo = articulo.getText();
-            vFabricante = //fabricante.getText();
+            vFabricante = (String) Cfabricante.getSelectedItem();
             vPeso = peso.getText();
             vCategoria = categoria.getText();
             vPreciov = preciov.getText();
             vPrecioc = precioc.getText();
             vExistencias = existencias.getText();
+            
+            int Cod = getCodigoFabricante(vFabricante);
+            
+            
             String url = "jdbc:mysql://localhost:3306/base_datos_ej1";
             String user = "root";
             String pass = "";
             Connection connection = DriverManager.getConnection(url, user, pass);
             Statement s = connection.createStatement();
-            String query = "insert into articulos values ('" + vCodigo + "','" + vArticulo + "','" + vFabricante + "','" + vPeso + "','" + vCategoria + "','" + vPreciov + "','" + vPrecioc + "','" + vExistencias + "')";
+            String query = "insert into articulos values ('" + vCodigo + "','" + vArticulo + "'," + Cod + "," + vPeso + ",'" + vCategoria + "'," + vPreciov + "," + vPrecioc + "," + vExistencias + ")";
             int resultado = s.executeUpdate(query);
 
             aceptar.setVisible(false);
@@ -518,11 +523,12 @@ public class Articulos extends javax.swing.JFrame {
             modificar.setEnabled(true);
             volver.setEnabled(true);
             borrar.setEnabled(true);
-            String query2 = "select A.* F.Nombre from articulos A, fabricantes F where A.Fabricante=F.Cod_Fabricante";
+            String query2 = "select A.*, F.Nombre from articulos A, fabricantes F where A.Fabricante=F.Cod_Fabricante";
             r = s.executeQuery(query2);
             r.first();
             codigo.setText(r.getString("COD_ARTICULO"));
             articulo.setText(r.getString("ARTICULO"));
+            Cfabricante.setSelectedItem(getNombreFabricante(r.getInt("FABRICANTE")));
             //fabricante.setText(r.getString("NOMBRE"));
             peso.setText(r.getString("PESO"));
             categoria.setText(r.getString("CATEGORIA"));
@@ -572,7 +578,7 @@ public class Articulos extends javax.swing.JFrame {
         try {
             ResultSet r3;
 
-            Statement s3 = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            Statement s3 = connection.createStatement();
             String queryNombre = "select nombre from fabricantes WHERE cod_fabricante=" + codigo;
             r3 = s3.executeQuery(queryNombre);
             r3.first();
@@ -589,8 +595,8 @@ public class Articulos extends javax.swing.JFrame {
         try {
 
             ResultSet r3;
-            Statement s3 = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            String queryCodigo = "select cod_fabricante from articulos WHERE nombre=" + nombre;
+            Statement s3 = connection.createStatement();
+            String queryCodigo = "select cod_fabricante from fabricantes WHERE nombre='" + nombre+"'";
             r3 = s3.executeQuery(queryCodigo);
             r3.first();
             vCodigo = r3.getInt("COD_FABRICANTE");
