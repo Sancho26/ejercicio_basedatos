@@ -223,6 +223,11 @@ public class Articulos extends javax.swing.JFrame {
         });
 
         Cfabricante.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        Cfabricante.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CfabricanteActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -410,7 +415,7 @@ public class Articulos extends javax.swing.JFrame {
         codigo.setText(null);
         articulo.setText(null);
         Cfabricante.setSelectedItem(null);
-        //fabricante.setText(null);
+        
         peso.setText(null);
         categoria.setText(null);
         preciov.setText(null);
@@ -447,7 +452,7 @@ public class Articulos extends javax.swing.JFrame {
             r.first();
             codigo.setText(r.getString("COD_ARTICULO"));
             articulo.setText(r.getString("ARTICULO"));
-            //fabricante.setText(r.getString("NOMBRE"));
+            
             Cfabricante.setSelectedItem(getNombreFabricante(r.getInt("FABRICANTE")));
             peso.setText(r.getString("PESO"));
             categoria.setText(r.getString("CATEGORIA"));
@@ -508,7 +513,7 @@ public class Articulos extends javax.swing.JFrame {
             String url = "jdbc:mysql://localhost:3306/base_datos_ej1";
             String user = "root";
             String pass = "";
-            Connection connection = DriverManager.getConnection(url, user, pass);
+            connection = DriverManager.getConnection(url, user, pass);
             Statement s = connection.createStatement();
             String query = "insert into articulos values ('" + vCodigo + "','" + vArticulo + "'," + Cod + "," + vPeso + ",'" + vCategoria + "'," + vPreciov + "," + vPrecioc + "," + vExistencias + ")";
             int resultado = s.executeUpdate(query);
@@ -529,7 +534,7 @@ public class Articulos extends javax.swing.JFrame {
             codigo.setText(r.getString("COD_ARTICULO"));
             articulo.setText(r.getString("ARTICULO"));
             Cfabricante.setSelectedItem(getNombreFabricante(r.getInt("FABRICANTE")));
-            //fabricante.setText(r.getString("NOMBRE"));
+           
             peso.setText(r.getString("PESO"));
             categoria.setText(r.getString("CATEGORIA"));
             preciov.setText(r.getString("PRECIO_VENTA"));
@@ -552,16 +557,16 @@ public class Articulos extends javax.swing.JFrame {
             String url = "jdbc:mysql://localhost:3306/base_datos_ej1";
             String user = "root";
             String pass = "";
-            Connection connection = DriverManager.getConnection(url, user, pass);
+            connection = DriverManager.getConnection(url, user, pass);
             Statement s = connection.createStatement();
             String query = "DELETE FROM articulos WHERE COD_ARTICULO='" + vCodigo + "'";
             int resultado = s.executeUpdate(query);
-            String query2 = "select A.* F.Nombre from articulos A, fabricantes F where A.Fabricante=F.Cod_Fabricante";
+            String query2 = "select A.*, F.Nombre from articulos A, fabricantes F where A.Fabricante=F.Cod_Fabricante";
             r = s.executeQuery(query2);
             r.first();
             codigo.setText(r.getString("COD_ARTICULO"));
             articulo.setText(r.getString("ARTICULO"));
-            //fabricante.setText(r.getString("NOMBRE"));
+            Cfabricante.setSelectedItem(getNombreFabricante(r.getInt("FABRICANTE")));
             peso.setText(r.getString("PESO"));
             categoria.setText(r.getString("CATEGORIA"));
             preciov.setText(r.getString("PRECIO_VENTA"));
@@ -571,6 +576,10 @@ public class Articulos extends javax.swing.JFrame {
             Logger.getLogger(Articulos.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_borrarActionPerformed
+
+    private void CfabricanteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CfabricanteActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_CfabricanteActionPerformed
 
     public static String getNombreFabricante(int codigo) {
 

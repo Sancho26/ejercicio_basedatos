@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
 
 /**
  *
@@ -20,7 +21,7 @@ import java.util.logging.Logger;
 public class Pedidos extends javax.swing.JFrame {
 
     static public ResultSet r;
-    
+    static public Connection connection;
 
     public Pedidos() throws SQLException {
         initComponents();
@@ -29,15 +30,26 @@ public class Pedidos extends javax.swing.JFrame {
         String url = "jdbc:mysql://localhost:3306/base_datos_ej1";
         String user = "root";
         String pass = "";
-        Connection connection = DriverManager.getConnection(url, user, pass);
+        connection = DriverManager.getConnection(url, user, pass);
 
         Statement s = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-        String query = "select P.*, C.Nombre from pedidos P, clientes C where C.NIF=P.CLIENTE";
+        String query = "select * FROM pedidos";
         r = s.executeQuery(query);
         r.first();
         num_pedido.setText(r.getString("NUM_PEDIDO"));
-        cliente.setText(r.getString("NOMBRE"));
         fecha.setText(r.getString("FECHA"));
+
+        String query2 = "select * FROM clientes";
+        ResultSet r2;
+        Statement s2 = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+        r2 = s2.executeQuery(query2);
+        DefaultComboBoxModel value1 = new DefaultComboBoxModel();
+
+        while (r2.next()) {
+            value1.addElement(r2.getString("NOMBRE"));
+        }
+        Ccliente.setModel(value1);
+        Ccliente.setSelectedItem(getNombreCliente(r.getString("CLIENTE")));
     }
 
     /**
@@ -120,6 +132,11 @@ public class Pedidos extends javax.swing.JFrame {
         });
 
         nuevo.setText("Nuevo");
+        nuevo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nuevoActionPerformed(evt);
+            }
+        });
 
         borrar.setText("Borrar");
         borrar.addActionListener(new java.awt.event.ActionListener() {
@@ -136,8 +153,18 @@ public class Pedidos extends javax.swing.JFrame {
         });
 
         aceptar.setText("Aceptar");
+        aceptar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                aceptarActionPerformed(evt);
+            }
+        });
 
         cancelar.setText("Cancelar");
+        cancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelarActionPerformed(evt);
+            }
+        });
 
         Ccliente.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
@@ -234,11 +261,11 @@ public class Pedidos extends javax.swing.JFrame {
         try {
             r.last();
             num_pedido.setText(r.getString("NUM_PEDIDO"));
-            cliente.setText(r.getString("NOMBRE"));
+            Ccliente.setSelectedItem(getNombreCliente(r.getString("CLIENTE")));
             fecha.setText(r.getString("FECHA"));
-            
+
         } catch (SQLException ex) {
-            Logger.getLogger(Articulos.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_ultimoActionPerformed
 
@@ -246,7 +273,7 @@ public class Pedidos extends javax.swing.JFrame {
         try {
             r.first();
             num_pedido.setText(r.getString("NUM_PEDIDO"));
-            cliente.setText(r.getString("NOMBRE"));
+            Ccliente.setSelectedItem(getNombreCliente(r.getString("CLIENTE")));
             fecha.setText(r.getString("FECHA"));
         } catch (SQLException ex) {
             Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
@@ -255,9 +282,9 @@ public class Pedidos extends javax.swing.JFrame {
 
     private void anteriorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_anteriorActionPerformed
         try {
-            if(r.previous()){
+            if (r.previous()) {
                 num_pedido.setText(r.getString("NUM_PEDIDO"));
-                cliente.setText(r.getString("NOMBRE"));
+                Ccliente.setSelectedItem(getNombreCliente(r.getString("CLIENTE")));
                 fecha.setText(r.getString("FECHA"));
             }
         } catch (SQLException ex) {
@@ -267,17 +294,39 @@ public class Pedidos extends javax.swing.JFrame {
 
     private void siguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_siguienteActionPerformed
         try {
-            if(r.next()){
-            num_pedido.setText(r.getString("NUM_PEDIDO"));
-            cliente.setText(r.getString("NOMBRE"));
-            fecha.setText(r.getString("FECHA"));
-            }   } catch (SQLException ex) {
-            Logger.getLogger(Articulos.class.getName()).log(Level.SEVERE, null, ex);
+            if (r.next()) {
+                num_pedido.setText(r.getString("NUM_PEDIDO"));
+                Ccliente.setSelectedItem(getNombreCliente(r.getString("CLIENTE")));
+                fecha.setText(r.getString("FECHA"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_siguienteActionPerformed
 
     private void borrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_borrarActionPerformed
-        // TODO add your handling code here:
+        try {
+            String vNum_pedido;
+            vNum_pedido = num_pedido.getText();
+
+            String url = "jdbc:mysql://localhost:3306/base_datos_ej1";
+            String user = "root";
+            String pass = "";
+            connection = DriverManager.getConnection(url, user, pass);
+            Statement s = connection.createStatement();
+            String query = "DELETE FROM pedidos WHERE NUM_PEDIDO=" + vNum_pedido + "";
+            int resultado = s.executeUpdate(query);
+            String query2 = "select P.*, C.* from pedidos P, clientes C where P.CLIENTE=C.NIF";
+            r = s.executeQuery(query2);
+            r.first();
+            num_pedido.setText(r.getString("NUM_PEDIDO"));
+            fecha.setText(r.getString("FECHA"));
+            Ccliente.setSelectedItem(getNombreCliente(r.getString("CLIENTE")));
+        } catch (SQLException ex) {
+            Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+
     }//GEN-LAST:event_borrarActionPerformed
 
     private void volverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_volverActionPerformed
@@ -286,22 +335,140 @@ public class Pedidos extends javax.swing.JFrame {
 
     private void modificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modificarActionPerformed
         try {
-            String vNum_pedido, vCliente, vFecha;
+            String vNum_pedido, vFecha, vCliente, nif;
             vNum_pedido = num_pedido.getText();
-            vCliente = cliente.getText();
             vFecha = fecha.getText();
+            vCliente = (String) Ccliente.getSelectedItem();
+            nif = getNIFCliente(vCliente);
             String url = "jdbc:mysql://localhost:3306/base_datos_ej1";
             String user = "root";
             String pass = "";
-            Connection connection = DriverManager.getConnection(url, user,pass);
+            connection = DriverManager.getConnection(url, user, pass);
             Statement s = connection.createStatement();
-            String query = "update pedidos set NUM_PEDIDO='" + vNum_pedido + "', CLIENTE='" + vCliente + "', FECHA='" + vFecha +"'";
+            String query = "update pedidos set FECHA='" + vFecha + "',CLIENTE='" + nif + "' WHERE NUM_PEDIDO='" + vNum_pedido + "'";
             int resultado = s.executeUpdate(query);
             r.refreshRow();
         } catch (SQLException ex) {
             Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_modificarActionPerformed
+
+    private void cancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelarActionPerformed
+        try {
+            aceptar.setVisible(false);
+            cancelar.setVisible(false);
+
+            num_pedido.setEditable(false);
+            primero.setEnabled(true);
+            ultimo.setEnabled(true);
+            siguiente.setEnabled(true);
+            anterior.setEnabled(true);
+            modificar.setEnabled(true);
+            volver.setEnabled(true);
+            borrar.setEnabled(true);
+
+            r.first();
+            num_pedido.setText(r.getString("NUM_PEDIDO"));
+            fecha.setText(r.getString("FECHA"));
+
+            Ccliente.setSelectedItem(getNombreCliente(r.getString("CLIENTE")));
+
+        } catch (SQLException ex) {
+            Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_cancelarActionPerformed
+
+    private void aceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aceptarActionPerformed
+        try {
+            String vNum_pedido, vFecha, vCliente;
+            vNum_pedido = num_pedido.getText();
+            vFecha = fecha.getText();
+            vCliente = (String) Ccliente.getSelectedItem();
+
+            String Nif = getNIFCliente(vCliente);
+
+            String url = "jdbc:mysql://localhost:3306/base_datos_ej1";
+            String user = "root";
+            String pass = "";
+            connection = DriverManager.getConnection(url, user, pass);
+            Statement s = connection.createStatement();
+            String query = "insert into pedidos values (" + vNum_pedido + ",'" + vFecha + "','" + Nif + "')";
+            int resultado = s.executeUpdate(query);
+
+            aceptar.setVisible(false);
+            cancelar.setVisible(false);
+            num_pedido.setEditable(false);
+            primero.setEnabled(true);
+            ultimo.setEnabled(true);
+            siguiente.setEnabled(true);
+            anterior.setEnabled(true);
+            modificar.setEnabled(true);
+            volver.setEnabled(true);
+            borrar.setEnabled(true);
+            String query2 = "select P.*, C.Nombre from clientes C, pedidos P where C.NIF=P.Cliente";
+            r = s.executeQuery(query2);
+            r.first();
+            num_pedido.setText(r.getString("NUM_PEDIDO"));
+            fecha.setText(r.getString("FECHA"));
+            Ccliente.setSelectedItem(getNombreCliente(r.getString("CLIENTE")));
+
+        } catch (SQLException ex) {
+            Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_aceptarActionPerformed
+
+    private void nuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nuevoActionPerformed
+        num_pedido.setText(null);
+        fecha.setText(null);
+        Ccliente.setSelectedItem(null);
+
+        num_pedido.setEditable(true);
+        aceptar.setVisible(true);
+        cancelar.setVisible(true);
+
+        primero.setEnabled(false);
+        ultimo.setEnabled(false);
+        siguiente.setEnabled(false);
+        anterior.setEnabled(false);
+        modificar.setEnabled(false);
+        volver.setEnabled(false);
+        borrar.setEnabled(false);
+    }//GEN-LAST:event_nuevoActionPerformed
+
+    public static String getNombreCliente(String NIF) {
+
+        String name = "";
+        try {
+            ResultSet r3;
+
+            Statement s3 = connection.createStatement();
+            String queryNombre = "select nombre from clientes WHERE NIF='" + NIF + "'";
+            r3 = s3.executeQuery(queryNombre);
+            r3.first();
+            name = r3.getString("NOMBRE");
+        } catch (SQLException ex) {
+            Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return name;
+    }
+
+    public static String getNIFCliente(String nombre) {
+
+        String vNif = "";
+
+        try {
+
+            ResultSet r3;
+            Statement s3 = connection.createStatement();
+            String queryNIF = "select NIF from clientes WHERE NOMBRE='" + nombre + "'";
+            r3 = s3.executeQuery(queryNIF);
+            r3.first();
+            vNif = r3.getString("NIF");
+        } catch (SQLException ex) {
+            Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return vNif;
+    }
 
     /**
      * @param args the command line arguments
