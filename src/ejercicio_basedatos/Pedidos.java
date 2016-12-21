@@ -379,39 +379,47 @@ public class Pedidos extends javax.swing.JFrame {
     }//GEN-LAST:event_cancelarActionPerformed
 
     private void aceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aceptarActionPerformed
-        try {
-            String vNum_pedido, vFecha, vCliente;
-            vNum_pedido = num_pedido.getText();
-            vFecha = fecha.getText();
-            vCliente = (String) Ccliente.getSelectedItem();
-
-            String Nif = getNIFCliente(vCliente);
-
-            String url = "jdbc:mysql://localhost:3306/base_datos_ej1";
-            String user = "root";
-            String pass = "";
-            connection = DriverManager.getConnection(url, user, pass);
-            Statement s = connection.createStatement();
-            String query = "insert into pedidos values (" + vNum_pedido + ",'" + vFecha + "','" + Nif + "')";
-            int resultado = s.executeUpdate(query);
-
-            aceptar.setVisible(false);
-            cancelar.setVisible(false);
-            num_pedido.setEditable(false);
-            primero.setEnabled(true);
-            ultimo.setEnabled(true);
-            siguiente.setEnabled(true);
-            anterior.setEnabled(true);
-            modificar.setEnabled(true);
-            volver.setEnabled(true);
-            borrar.setEnabled(true);
-            String query2 = "select P.*, C.Nombre from clientes C, pedidos P where C.NIF=P.Cliente";
-            r = s.executeQuery(query2);
-            r.first();
-            num_pedido.setText(r.getString("NUM_PEDIDO"));
-            fecha.setText(r.getString("FECHA"));
-            Ccliente.setSelectedItem(getNombreCliente(r.getString("CLIENTE")));
-
+        try {                                        
+            try {
+                String vNum_pedido, vFecha, vCliente;
+                vNum_pedido = num_pedido.getText();
+                vFecha = fecha.getText();
+                vCliente = (String) Ccliente.getSelectedItem();
+                
+                String Nif = getNIFCliente(vCliente);
+                
+                String url = "jdbc:mysql://localhost:3306/base_datos_ej1";
+                String user = "root";
+                String pass = "";
+                connection = DriverManager.getConnection(url, user, pass);
+                Statement s = connection.createStatement();
+                String query = "insert into pedidos values (" + vNum_pedido + ",'" + vFecha + "','" + Nif + "')";
+                int resultado = s.executeUpdate(query);
+                
+                aceptar.setVisible(false);
+                cancelar.setVisible(false);
+                num_pedido.setEditable(false);
+                primero.setEnabled(true);
+                ultimo.setEnabled(true);
+                siguiente.setEnabled(true);
+                anterior.setEnabled(true);
+                modificar.setEnabled(true);
+                volver.setEnabled(true);
+                borrar.setEnabled(true);
+                String query2 = "select P.*, C.Nombre from clientes C, pedidos P where C.NIF=P.Cliente";
+                r = s.executeQuery(query2);
+                r.first();
+                num_pedido.setText(r.getString("NUM_PEDIDO"));
+                fecha.setText(r.getString("FECHA"));
+                Ccliente.setSelectedItem(getNombreCliente(r.getString("CLIENTE")));
+                
+            } catch (SQLException ex) {
+                Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            Pedidos ped = new Pedidos();
+            ped.setVisible(true);
+            this.setVisible(false);
         } catch (SQLException ex) {
             Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -491,55 +491,63 @@ public class Articulos extends javax.swing.JFrame {
             int resultado = s.executeUpdate(query);
             r.refreshRow();
         } catch (SQLException ex) {
-            Logger.getLogger(Clientes.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Articulos.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_modificarActionPerformed
 
     private void aceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aceptarActionPerformed
-        try {
-            String vCodigo, vArticulo, vFabricante, vPeso, vCategoria, vPreciov, vPrecioc, vExistencias;
-            vCodigo = codigo.getText();
-            vArticulo = articulo.getText();
-            vFabricante = (String) Cfabricante.getSelectedItem();
-            vPeso = peso.getText();
-            vCategoria = categoria.getText();
-            vPreciov = preciov.getText();
-            vPrecioc = precioc.getText();
-            vExistencias = existencias.getText();
+        try {                                        
+            try {
+                String vCodigo, vArticulo, vFabricante, vPeso, vCategoria, vPreciov, vPrecioc, vExistencias;
+                vCodigo = codigo.getText();
+                vArticulo = articulo.getText();
+                vFabricante = (String) Cfabricante.getSelectedItem();
+                vPeso = peso.getText();
+                vCategoria = categoria.getText();
+                vPreciov = preciov.getText();
+                vPrecioc = precioc.getText();
+                vExistencias = existencias.getText();
+                
+                int Cod = getCodigoFabricante(vFabricante);
+                
+                
+                String url = "jdbc:mysql://localhost:3306/base_datos_ej1";
+                String user = "root";
+                String pass = "";
+                connection = DriverManager.getConnection(url, user, pass);
+                Statement s = connection.createStatement();
+                String query = "insert into articulos values ('" + vCodigo + "','" + vArticulo + "'," + Cod + "," + vPeso + ",'" + vCategoria + "'," + vPreciov + "," + vPrecioc + "," + vExistencias + ")";
+                int resultado = s.executeUpdate(query);
+                
+                aceptar.setVisible(false);
+                cancelar.setVisible(false);
+                codigo.setEditable(false);
+                primero.setEnabled(true);
+                ultimo.setEnabled(true);
+                siguiente.setEnabled(true);
+                anterior.setEnabled(true);
+                modificar.setEnabled(true);
+                volver.setEnabled(true);
+                borrar.setEnabled(true);
+                String query2 = "select A.*, F.Nombre from articulos A, fabricantes F where A.Fabricante=F.Cod_Fabricante";
+                r = s.executeQuery(query2);
+                r.first();
+                codigo.setText(r.getString("COD_ARTICULO"));
+                articulo.setText(r.getString("ARTICULO"));
+                Cfabricante.setSelectedItem(getNombreFabricante(r.getInt("FABRICANTE")));
+                
+                peso.setText(r.getString("PESO"));
+                categoria.setText(r.getString("CATEGORIA"));
+                preciov.setText(r.getString("PRECIO_VENTA"));
+                precioc.setText(r.getString("PRECIO_COSTE"));
+                existencias.setText(r.getString("EXISTENCIAS"));
+            } catch (SQLException ex) {
+                Logger.getLogger(Articulos.class.getName()).log(Level.SEVERE, null, ex);
+            }
             
-            int Cod = getCodigoFabricante(vFabricante);
-            
-            
-            String url = "jdbc:mysql://localhost:3306/base_datos_ej1";
-            String user = "root";
-            String pass = "";
-            connection = DriverManager.getConnection(url, user, pass);
-            Statement s = connection.createStatement();
-            String query = "insert into articulos values ('" + vCodigo + "','" + vArticulo + "'," + Cod + "," + vPeso + ",'" + vCategoria + "'," + vPreciov + "," + vPrecioc + "," + vExistencias + ")";
-            int resultado = s.executeUpdate(query);
-
-            aceptar.setVisible(false);
-            cancelar.setVisible(false);
-            codigo.setEditable(false);
-            primero.setEnabled(true);
-            ultimo.setEnabled(true);
-            siguiente.setEnabled(true);
-            anterior.setEnabled(true);
-            modificar.setEnabled(true);
-            volver.setEnabled(true);
-            borrar.setEnabled(true);
-            String query2 = "select A.*, F.Nombre from articulos A, fabricantes F where A.Fabricante=F.Cod_Fabricante";
-            r = s.executeQuery(query2);
-            r.first();
-            codigo.setText(r.getString("COD_ARTICULO"));
-            articulo.setText(r.getString("ARTICULO"));
-            Cfabricante.setSelectedItem(getNombreFabricante(r.getInt("FABRICANTE")));
-           
-            peso.setText(r.getString("PESO"));
-            categoria.setText(r.getString("CATEGORIA"));
-            preciov.setText(r.getString("PRECIO_VENTA"));
-            precioc.setText(r.getString("PRECIO_COSTE"));
-            existencias.setText(r.getString("EXISTENCIAS"));
+            Articulos art = new Articulos ();
+            art.setVisible(true);
+            this.setVisible(false);
         } catch (SQLException ex) {
             Logger.getLogger(Articulos.class.getName()).log(Level.SEVERE, null, ex);
         }
