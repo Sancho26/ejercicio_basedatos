@@ -10,8 +10,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
- * @author FranS
+ * Pestaña menú, desde aquí se accede a las demás pestañas de la aplicación
+ * @author Fran Sancho
+ * @version 1.0
  */
 public class Menu extends javax.swing.JFrame {
 
@@ -190,6 +191,9 @@ public class Menu extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
+                /**
+                 * @param Menu se hace visible al ejecutar.
+                 */
                 new Menu().setVisible(true);
             }
         });

@@ -13,11 +13,20 @@ package ejercicio_basedatos;
     import java.util.logging.Level;
     import java.util.logging.Logger;
 
+    /**
+     * Pestaña Fabricantes
+     * @author Fran Sancho
+     * @version 1.0
+     */
+
 
 public class Fabricantes extends javax.swing.JFrame {
 
     static public ResultSet r;
-    
+    /**
+     * Clase constructor de la pestaña Fabricantes, desde aquí se inicializan los datos que se van a mostrar en esta pestaña de la aplicación, ejecutando una consulta a la Base de Datos y mostrando en cada textfield los datos correspondientes
+     * @throws SQLException ...
+     */
     public Fabricantes() throws SQLException {
         initComponents();
         aceptar.setVisible(false);

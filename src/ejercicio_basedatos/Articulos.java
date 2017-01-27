@@ -14,11 +14,29 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 
-public class Articulos extends javax.swing.JFrame {
+/**
+ * Pestaña Artículos
+ * @author Fran Sancho
+ * @version 1.0
+ */
 
+public class Articulos extends javax.swing.JFrame {
+    /**
+     * Objeto usado para poder actualizar el contenido de la Base de Datos
+     */
     static public ResultSet r;
+    /**
+     * Objeto usado para conectar con la Base de Datos
+     */
     static public Connection connection;
 
+    /**
+     * Clase constructor de la pestaña Artículos, desde aquí se inicializan los datos que se van a mostrar en esta pestaña de la aplicación, 
+     * ejecutando una consulta a la Base de Datos y mostrando en cada textfield y ComboBox los datos correspondientes
+     * @throws SQLException ...
+     * 
+     * 
+     */
     public Articulos() throws SQLException {
         initComponents();
         aceptar.setVisible(false);
@@ -589,6 +607,12 @@ public class Articulos extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_CfabricanteActionPerformed
 
+    /**
+     * Método que recoje el nombre del fabricante en base a su código en la Base de Datos
+     * @param codigo variable de tipo int que contendrá el código del fabricante
+     * @return devuelve una variable con el nombre del fabricante
+     * @since Incluido desde la versión 1.0 de la aplicación
+     */
     public static String getNombreFabricante(int codigo) {
 
         String name = "";
@@ -605,7 +629,12 @@ public class Articulos extends javax.swing.JFrame {
         }
         return name;
     }
-
+    /**
+     * Método que recoje el código del fabricante en base a su nombre en la Base de Datos
+     * @param nombre variable de tipo String que contendrá el nombre del fabricante
+     * @return devuelve una variable con el código del fabricante
+     * @since Inlcuido desde la versión 1.0 de la aplicación
+     */
     public static int getCodigoFabricante(String nombre) {
         int vCodigo = 0;
         

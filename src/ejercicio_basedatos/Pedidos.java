@@ -15,14 +15,26 @@ import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 
 /**
- *
- * @author FranS
+ * Pestaña Pedidos
+ * @author Fran Sancho
+ * @version 1.0
  */
 public class Pedidos extends javax.swing.JFrame {
-
+    
+    /**
+     * Objeto usado para actualizar el contenido de la Base de Datos
+     */
     static public ResultSet r;
+    
+    /**
+     * Objeto usado para conectar con la Base de Datos
+     */
     static public Connection connection;
-
+    
+    /**
+     * Clase constructor de la pestaña Pedidos, desde aquí se inicializan los datos que se van a mostrar en esta pestaña de la aplicación, ejecutando una consulta a la Base de Datos y mostrando en cada textfield y ComboBox los datos correspondientes
+     * @throws SQLException ...
+     */
     public Pedidos() throws SQLException {
         initComponents();
         aceptar.setVisible(false);
@@ -442,7 +454,12 @@ public class Pedidos extends javax.swing.JFrame {
         volver.setEnabled(false);
         borrar.setEnabled(false);
     }//GEN-LAST:event_nuevoActionPerformed
-
+    /**
+     * Método que recoje el nombre del cliente en base a su NIF en la Base de Datos
+     * @param NIF variable de tipo String que contendrá el NIF del cliente (Números y letra)
+     * @return devuelve una variable con el nombre del cliente
+     * @since Incluido desde la versión 1.0 de la aplicación
+     */
     public static String getNombreCliente(String NIF) {
 
         String name = "";
@@ -459,7 +476,12 @@ public class Pedidos extends javax.swing.JFrame {
         }
         return name;
     }
-
+    /**
+     * Método que recoje el NIF del cliente en base a su nombre en la Base de Datos
+     * @param nombre variable de tipo String que contendrá el nombre del cliente
+     * @return devuelve una variable con el NIF del cliente
+     * @since Incluido desde la versión 1.0 de la aplicación
+     */
     public static String getNIFCliente(String nombre) {
 
         String vNif = "";

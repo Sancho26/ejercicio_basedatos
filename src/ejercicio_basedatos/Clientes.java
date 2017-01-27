@@ -12,11 +12,22 @@ package ejercicio_basedatos;
     import java.sql.Statement;
     import java.util.logging.Level;
     import java.util.logging.Logger;
+    
+    /**
+     * Pestaña Clientes
+     * @author Fran Sancho
+     * @version 1.0
+     */
             
 public class Clientes extends javax.swing.JFrame {
-
-    static public ResultSet r;
     
+    
+    static public ResultSet r;
+    /**
+     * 
+     * Clase constructor de la pestaña Clientes, desde aquí se inicializan los datos que se van a mostrar en esta pestaña de la aplicación, ejecutando una consulta a la Base de Datos y mostrando en cada textfield los datos correspondientes
+     * @throws SQLException ...
+     */
     public Clientes() throws SQLException {
         initComponents();
         aceptar.setVisible(false);
@@ -36,7 +47,7 @@ public class Clientes extends javax.swing.JFrame {
         poblacion.setText(r.getString("POBLACION"));
         provincia.setText(r.getString("PROVINCIA"));
         telefono.setText(r.getString("TELEFONO"));
-        //NOS HEMOS QUEDADO POR AQUÍ 
+        
     }
 
     /**

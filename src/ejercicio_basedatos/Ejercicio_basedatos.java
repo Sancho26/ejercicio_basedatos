@@ -9,13 +9,15 @@ import java.sql.SQLException;
 
 
 /**
- *
- * @author FranS
+ * Clase principal de la aplicación, desde aquí se ejecuta la clase menú
+ * @author Fran Sancho
+ * @version 1.0
  */
 public class Ejercicio_basedatos {
 
     /**
      * @param args the command line arguments
+     * @throws SQLException ...
      */
     public static void main(String[] args) throws SQLException {
         Menu men = new Menu();
