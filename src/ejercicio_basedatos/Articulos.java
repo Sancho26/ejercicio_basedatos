@@ -495,7 +495,7 @@ public class Articulos extends javax.swing.JFrame {
             //Llamar metodo obtener codigo con el valor del combo
             int Cod = getCodigoFabricante(vFabricante);
             
-            ///Este codigo lo actualizo en la bbdd
+            
                                
             vPeso = peso.getText();
             vCategoria = categoria.getText();
